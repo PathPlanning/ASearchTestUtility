@@ -16,8 +16,9 @@ class Application:
     def StartTesting(self):
         self.experiment.StartTesting()
 
-    def ChangeTestExePath(self, path):
+    def ChangeTestPath(self, path, mapfile):
         self.experiment.execFilePath = path
+        self.experiment.mapFilePath = mapfile
 
     def ChangeTestRep(self, num):
         self.experiment.repeat = num
@@ -31,3 +32,6 @@ class Application:
         self.experiment.repeat = rep
         self.experiment.opentype = optype
         self.experiment.allowdupl = allowdupl
+
+    def UpdateAdvWindow(self, mode):
+        self.advWindow.UpdateMode(mode)

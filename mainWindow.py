@@ -43,7 +43,7 @@ class MainWindow(Tk):
 
     def runButtonClicked(self):
         self.path = self.pathBox.get()
-        self.parentApp.ChangeTestExePath(self.path)
+        self.parentApp.ChangeTestPath(self.path, self.mapfilepath)
         self.parentApp.StartTesting()
 
     def mapfileButtonClicked(self):
@@ -61,8 +61,10 @@ class MainWindow(Tk):
 
     def defaultMapSelected(self):
         self.mapfileButton.config(state="disable")
-        self.parentApp.ChangeTestMode(self.var)
+        self.parentApp.ChangeTestMode(self.var.get())
+        self.parentApp.UpdateAdvWindow(self.var.get())
 
     def notDefaultMapSelected(self):
         self.mapfileButton.config(state="normal")
-        self.parentApp.ChangeTestMode(self.var)
+        self.parentApp.ChangeTestMode(self.var.get())
+        self.parentApp.UpdateAdvWindow(self.var.get())

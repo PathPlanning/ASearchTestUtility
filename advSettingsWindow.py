@@ -4,6 +4,8 @@ from tkinter import filedialog
 from tkinter import StringVar
 from tkinter import ttk
 
+
+
 class AdvSettingsWindow(Toplevel):
     def __init__(self, app):
         Toplevel.__init__(self)
@@ -13,10 +15,14 @@ class AdvSettingsWindow(Toplevel):
         self.ystr = StringVar()
         self.opentype = StringVar()
         self.allowdupl = 0
-        self.opentypes = ("vectoroflists", "list", "set", "priorityqueue", "vectorofpriorityqueues", "vectorofsets")
+        self.opentypes = ("list", "vectoroflists", "set",  "vectorofsets", "priorityqueue", "vectorofpriorityqueues")
         self.rep = 1
         self.x = 100
         self.y = 101
+        self.mode = 0
+        self.error = 0
+        self.errormes = ""
+
         self.wm_title("Advanced settings")
         self.geometry("410x320")
         self.resizable(False, False)
@@ -66,46 +72,82 @@ class AdvSettingsWindow(Toplevel):
         self.protocol("WM_DELETE_WINDOW", self.callback)
 
         self.repstr.trace("w", lambda name, index, mode, var=self.repstr: self.repeatEnrChange(var))
-        self.xstr.trace("w", lambda name, index, mode, var=self.xstr: self.sizestEnrChange(var))
-        self.ystr.trace("w", lambda name, index, mode, var=self.ystr: self.sizefnEnrChange(var))
+
+        self.xstr.trace("w", lambda name, useless, mode, vars = (1, self.xstr, self.ystr): self.sizeEnrChanged(vars))
+        self.ystr.trace("w", lambda name, useless, mode, vars = (2, self.xstr, self.ystr): self.sizeEnrChanged(vars))
+        self.opentype.trace("w", self.CheckDupl)
+
         self.repeatBox.insert(0, str(self.rep))
         self.startSize.insert(0, str(self.x))
         self.finSize.insert(0, str(self.y))
 
     def callback(self):
-        self.parentApp.UpdateTestAdvSettings(self.x, self.y, self.rep, self.opentype.get(), self.allowdupl)
-        self.withdraw()
+        if self.error == 0:
+            self.parentApp.UpdateTestAdvSettings(self.x, self.y, self.rep, self.opentype.get(), self.allowdupl)
+            self.withdraw()
+        else:
+            messagebox.showinfo('Enter correct information', self.errormes)
 
     def repeatEnrChange(self, sv):
         try:
-            self.rep = int(sv.get())
+            tmp = int(sv.get())
+            if tmp <= 0:
+                raise ValueError('value should be more then 0')
+            self.rep = tmp
+            self.error = 0
             self.repeatBox.config({"background": "White"})
-        except ValueError:
-            if sv.get() != "":
+        except ValueError as e:
                 self.repeatBox.config({"background": "Red"})
+                self.error = 1
+                self.errormes = "Enter correct number of repetition"
         return True
 
-    def sizestEnrChange(self, sv):
+    def sizeEnrChanged(self, vars):
+        if vars[0] == 1:
+            entr = self.startSize
+        else:
+            entr = self.finSize
         try:
-            tmp = int(sv.get())
-            if tmp >= self.y:
-                raise ValueError('Second value should be more then first')
-            self.x = tmp
-            self.startSize.config({"background": "White"})
-        except ValueError:
-            if sv.get() != "":
-                self.startSize.config({"background": "Red"})
+            tmp = int(vars[vars[0]].get())
+            if tmp <= 0:
+                raise ValueError('Value should be more then 0')
+            entr.config({"background": "White"})
+            if vars[0] == 1:
+                self.x = tmp
+            else:
+                self.y = tmp
+
+            if self.x >= self.y:
+                raise Warning('Start valuse should be less then final')
+            else:
+                self.startSize.config({"background": "White"})
+                self.finSize.config({"background": "White"})
+            self.error = 0
+        except ValueError as e:
+                entr.config({"background": "Red"})
+                self.error = 1
+                self.errormes = "Enter correct size"
+        except Warning as e:
+            self.startSize.config({"background": "Red"})
+            self.finSize.config({"background": "Red"})
+            self.error = 1
+            self.errormes = str(e)
+
         return True
 
-    def sizefnEnrChange(self, sv):
-        try:
-            tmp = int(sv.get())
-            if tmp <= self.x:
-                raise ValueError('Second value should be more then first')
-            self.y = tmp
-            self.finSize.config({"background": "White"})
+    def UpdateMode(self, mode):
+        self.mode = mode
+        if self.mode == 0:
+            self.startSize.config(state="normal")
+            self.finSize.config(state="normal")
+        else:
+            self.startSize.config(state="disable")
+            self.finSize.config(state="disable")
 
-        except ValueError:
-            if sv.get() != "":
-                self.finSize.config({"background": "Red"})
-        return True
+    def CheckDupl(self, *args):
+        if(self.opentypes.index(self.opentype.get()) > 3):
+            self.rbutton1.config(state="disable")
+            self.rbutton2.config(state="disable")
+        else:
+            self.rbutton1.config(state="normal")
+            self.rbutton2.config(state="normal")

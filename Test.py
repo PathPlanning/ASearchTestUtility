@@ -45,7 +45,6 @@ class Test:
 
     def StartTesting(self):
         if self.mode == 0:
-            self.addstr = " fakemap"
             i = 0
             while i < self.repeat:
                 j = self.startSize
@@ -55,13 +54,17 @@ class Test:
                     self.finishx = self.width - 1
                     self.finishy = self.height - 1
                     self.GenerateEmptyXML()
-                    os.system(self.execFilePath + " " + self.mapFilePath + self.addstr)
-                    self.WriteResults(self.mode, i, j)
+                    os.system(self.execFilePath + " " + self.mapFilePath + " fakemap")
+                    self.WriteResults( i, j)
                     j += 100
                 i += 1
                 self.resrow = 0
-        elif self.mode == 1:
-            self.addstr = ""
+        elif self.mode == 2:
+            i = 0
+            while i < self.repeat:
+                os.system(self.execFilePath + " " + self.mapFilePath)
+                self.WriteResults(i, self.width)
+                i += 1
         self.CountAv()
         self.wb.save('Result.xls')
 
@@ -122,27 +125,33 @@ class Test:
             tree.write(fh, encoding="utf-8")
         self.mapFilePath = "tmp.xml"
 
-    def WriteResults(self, mode, ntry, size):
-        tree = xml.ElementTree(file="tmp_log.xml")
+    def WriteResults(self, ntry, size):
+        tree = xml.ElementTree(file=self.mapFilePath[0:-4] + "_log.xml")
         root = tree.getroot()
         log = root.find("log")
         summary = log.find("summary")
         sumitems = summary.items()
         modename = ""
-        if mode == 0:
+        if self.mode == 0:
             modename = "emptymap"
+        elif self.mode == 2:
+            modename = "Not default map"
         if ntry == 0:
             self.res.write(self.resrow, 0, modename)
             self.res.write(self.resrow, 1, size)
 
         self.res.write(self.resrow, ntry + 2, sumitems[4][1])
-        self.resrow += 1
+        self.resrow += 1 * (1 if self.mode == 0 else 0)
 
     def CountAv(self):
-        i = self.startSize
         numstyle = XFStyle()
         numstyle.num_format_str = "0.0000"
-        while i <= self.finSize:
-            formula = 'AVERAGE(C1:%s)' % (Utils.rowcol_to_cell( int(i/100) - 1, self.repeat + 1))
-            self.res.write(int(i/100) - 1, 2 + self.repeat , xlwt.Formula(formula), numstyle)
-            i += 100
+        if self.mode == 0:
+            i = 0
+            while i <= (self.finSize - self.startSize)/100:
+                formula = 'AVERAGE(C1:%s)' % (Utils.rowcol_to_cell( i, self.repeat + 1))
+                self.res.write(i, 2 + self.repeat , xlwt.Formula(formula), numstyle)
+                i += 1
+        elif self.mode == 2:
+            formula = 'AVERAGE(C1:%s)' % (Utils.rowcol_to_cell(0, self.repeat + 1))
+            self.res.write(0, 2 + self.repeat, xlwt.Formula(formula), numstyle)
