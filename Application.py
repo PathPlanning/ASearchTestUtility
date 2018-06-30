@@ -1,5 +1,6 @@
 from mainWindow import *
-from Test import Test
+from Test import *
+from time import sleep
 
 class Application:
 
@@ -7,8 +8,12 @@ class Application:
         self.root = MainWindow(title="PathTester", app=self)
         self.advWindow = AdvSettingsWindow(app=self)
         self.advWindow.withdraw()
-        self.experiment = Test()
+        self.experiment = Test(self)
+        self.task = Mission()
+        self.experiment.task = self.task
+        self.advWindow.task = self.task
         self.root.mainloop()
+
 
     def ChangeTestMode(self, mode):
         self.experiment.mode = mode
@@ -26,12 +31,19 @@ class Application:
     def ChangeTestMapSize(self, x, y):
         self.experiment.SetMapSize(x, y)
 
-    def UpdateTestAdvSettings(self, x, y, rep, optype, allowdupl):
+    def UpdateTestAdvSettings(self, x, y, rep):
         self.experiment.startSize = x
         self.experiment.finSize = y
         self.experiment.repeat = rep
-        self.experiment.opentype = optype
-        self.experiment.allowdupl = allowdupl
 
     def UpdateAdvWindow(self, mode):
-        self.advWindow.UpdateMode(mode)
+        self.advWindow.Update(mode)
+
+    def ParseMapXML(self):
+        self.experiment.ParseMapXML()
+
+    def StartExperiment(self):
+        self.experiment.StartTesting()
+
+
+
