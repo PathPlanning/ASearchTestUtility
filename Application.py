@@ -44,5 +44,8 @@ class Application:
     def StartExperiment(self):
         self.experiment.StartTesting()
 
+    def EndExperiment(self):
+        self.root.ProgressEnd()
+
 
 

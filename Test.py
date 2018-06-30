@@ -52,10 +52,10 @@ class Test:
             while i < self.repeat:
                 j = self.startSize
                 while j <= self.finSize:
-                    self.width = j
-                    self.height = j
-                    self.finishx = self.width - 1
-                    self.finishy = self.height - 1
+                    self.task.width = j
+                    self.task.height = j
+                    self.task.finishx = self.task.width - 1
+                    self.task.finishy = self.task.height - 1
                     self.GenerateEmptyXML()
                     os.system(self.execFilePath + " " + self.mapFilePath + " fakemap")
                     self.WriteResults( i, j)
@@ -72,6 +72,7 @@ class Test:
         self.CountAv()
         self.wb.save("Result_" + str(self.resnum) + ".xls")
         self.Reset()
+        self.parentApp.EndExperiment()
 
     def GenerateEmptyXML(self):
         root = xml.Element("root")

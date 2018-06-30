@@ -31,7 +31,6 @@ class MainWindow(Tk):
         self.rbutton1 = Radiobutton(self.mapsettingsframe, text='Empty map', variable=self.var, value=0, command = self.defaultMapSelected, anchor="w", background= self.bgcolor)
         #self.rbutton2 = Radiobutton(self.mapsettingsframe, text='Спираль', variable=self.var, value=1, anchor="w",command =  self.defaultMapSelected)
         self.rbutton3 = Radiobutton(self.mapsettingsframe, text='Chose map file', variable=self.var, value=2, command = self.notDefaultMapSelected, anchor="w", background= self.bgcolor)
-
         self.rbutton1.grid(row=0,sticky='new')
         #self.rbutton2.grid(row=1,sticky='new')
         self.rbutton3.grid(row=2,sticky='new')
@@ -49,6 +48,7 @@ class MainWindow(Tk):
 
 
     def runButtonClicked(self):
+        self.ProgressStart()
         self.path = self.pathBox.get()
         self.parentApp.ChangeTestPath(self.path, self.mapfilepath)
         self.parentApp.StartExperiment()
@@ -82,27 +82,29 @@ class MainWindow(Tk):
         self.parentApp.ChangeTestMode(self.var.get())
         self.parentApp.UpdateAdvWindow(self.var.get())
 
-    # def ProgressStart(self):
-    #     self.runButton.config(state="disable")
-    #     self.advButton.config(state="disable")
-    #     self.mapfileButton.config(state="disable")
-    #     self.mapPathBox.config(state="disable")
-    #     self.fileButton.config(state="disable")
-    #     self.pathBox.config(state="disable")
-    #     self.rbutton1.config(state="disable")
-    #     self.rbutton3.config(state="disable")
-    #     self.wm_title("In progress...")
+    def ProgressStart(self):
+        self.runButton.config(state="disable")
+        self.advButton.config(state="disable")
+        self.mapfileButton.config(state="disable")
+        self.mapPathBox.config(state="disable")
+        self.fileButton.config(state="disable")
+        self.pathBox.config(state="disable")
+        self.rbutton1.config(state="disable")
+        self.rbutton3.config(state="disable")
+        self.wm_title("In progress...")
+        self.update()
 
-    # def ProgressEnd(self):
-    #     self.runButton.config(state="normal")
-    #     self.advButton.config(state="normal")
-    #
-    #     if self.var.get() == 2:
-    #         self.mapfileButton.config(state="normal")
-    #         self.mapPathBox.config(state="normal")
-    #
-    #     self.fileButton.config(state="normal")
-    #     self.pathBox.config(state="normal")
-    #     self.rbutton1.config(state="normal")
-    #     self.rbutton3.config(state="normal")
-    #     self.wm_title("PathTester")
+    def ProgressEnd(self):
+        self.runButton.config(state="normal")
+        self.advButton.config(state="normal")
+
+        if self.var.get() == 2:
+            self.mapfileButton.config(state="normal")
+            self.mapPathBox.config(state="normal")
+
+        self.fileButton.config(state="normal")
+        self.pathBox.config(state="normal")
+        self.rbutton1.config(state="normal")
+        self.rbutton3.config(state="normal")
+        self.wm_title("PathTester")
+        self.update()
