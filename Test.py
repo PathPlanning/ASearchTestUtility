@@ -36,11 +36,10 @@ class Test:
         self.mode = 0
         self.loglevel = 0.5
         self.addstr = ""
-        self.startSize = 100
-        self.finSize = 101
+        self.startSize = 10000
+        self.finSize = 11000
         self.wb = xlwt.Workbook()
         self.res = self.wb.add_sheet('result')
-        self.av = self.wb.add_sheet('average')
         self.resrow = 0
         self.avrow = 0
         self.sumtry = 0
@@ -211,7 +210,6 @@ class Test:
     def Reset(self):
         self.wb = xlwt.Workbook()
         self.res = self.wb.add_sheet('result')
-        self.av = self.wb.add_sheet('average')
         self.resrow = 0
         self.avrow = 0
         self.sumtry = 0

@@ -25,8 +25,8 @@ class AdvSettingsWindow(Toplevel):
         self.opentype = StringVar()
         self.allowdupl = 0
         self.rep = 1
-        self.x = 100
-        self.y = 101
+        self.x = 10000
+        self.y = 11000
         self.mode = 0
         self.mtype = StringVar()
         self.stype = StringVar()

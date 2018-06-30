@@ -1,6 +1,5 @@
 from mainWindow import *
 from Test import *
-from time import sleep
 
 class Application:
 
