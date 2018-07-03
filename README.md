@@ -7,10 +7,10 @@ A small utility for testing of [AStar-DCO](https://github.com/haiot4105/PathSear
  This utility allows to simplify the process of collecting data about the speed of the algorithm implemented using various containers for the Open  set.
 
  In the main window you can select an executable file and the type of input data (You can use an empty map or a prepared file with map)
- 
+
 ![MainWindow](./Screenshots/main.png)
 
- In the advanced settings you can set up the input file tags (for more information about tags see Input and Output files section of [AStar-DCO repository](https://github.com/haiot4105/PathSearching)) and the number of runnings of one  same test. If you use an empty map, you can specify the initial and final size of the map. In this case, several tests will be performed with an empty map and the specified settings, and the map size will change in steps of 100 units from the initial size to the final one (The empty map has a square shape and the size indicates the length of its side).
+ In the advanced settings you can set up the input file tags (for more information about tags see Input and Output files section of [AStar-DCO repository](https://github.com/haiot4105/PathSearching)) and the number of runnings of one  same test. If you use an empty map, you can specify the initial and final size of the map. In this case, several tests will be performed with an empty map and the specified settings, and the map size will change in steps of 100 units from the initial size to the final one (The empty map has a square shape and the size indicates the length of its side. Start and finish are located on opposite corners of the map, and the path passes diagonally). 
  
 ![AdvWindow](./Screenshots/adv.png)
 

@@ -12,7 +12,7 @@ class AdvSettingsWindow(Toplevel):
         # Инициализация и списки значений
         Toplevel.__init__(self)
         self.parentApp = app
-        self.opentypes = ("list", "vectoroflists", "set", "vectorofsets", "priorityqueue", "vectorofpriorityqueues")
+        self.opentypes = ("list", "vectoroflists", "set", "vectorofsets", "priorityqueue", "vectorofpriorityqueues", "all types")
         self.metrictypes = ("euclidean", "diagonal", "manhattan", "chebyshev")
         self.searchtypes = ("astar", "dijkstra")
         self.breakingties = ("g-min", "g-max")
@@ -244,6 +244,7 @@ class AdvSettingsWindow(Toplevel):
             self.rbutton1.select()
             self.rbutton1.config(state="disable")
             self.rbutton2.config(state="disable")
+
         else:
             self.rbutton1.config(state="normal")
             self.rbutton2.config(state="normal")

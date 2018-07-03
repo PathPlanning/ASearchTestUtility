@@ -39,37 +39,66 @@ class Test:
         self.startSize = 10000
         self.finSize = 11000
         self.wb = xlwt.Workbook()
-        self.res = self.wb.add_sheet('result')
         self.resrow = 0
         self.avrow = 0
         self.sumtry = 0
         self.task = Mission()
         self.resnum = 0
+        self.opentypes = []
+        self.duplvars = []
 
     def StartTesting(self):
+        while os.path.exists("Result_" + str(self.resnum) + ".xls"):
+            self.resnum += 1
+
+        if self.task.opentype == "all types":
+            self.opentypes = ["list", "vectoroflists", "set", "vectorofsets", "priorityqueue", "vectorofpriorityqueues"]
+            self.duplvars = [0, 1]
+        else:
+            self.opentypes = [self.task.opentype]
+            self.duplvars = [self.task.allowdupl]
+
         if self.mode == 0:
-            i = 0
-            while i < self.repeat:
-                j = self.startSize
-                while j <= self.finSize:
-                    self.task.width = j
-                    self.task.height = j
-                    self.task.finishx = self.task.width - 1
-                    self.task.finishy = self.task.height - 1
-                    self.GenerateEmptyXML()
-                    os.system(self.execFilePath + " " + self.mapFilePath + " fakemap")
-                    self.WriteResults( i, j)
-                    j += 100
-                i += 1
-                self.resrow = 0
+
+            for optp in self.opentypes:
+                for dp in self.duplvars:
+                    if (optp in [ "priorityqueue", "vectorofpriorityqueues"]) and (dp == 1):
+                        continue
+                    self.res = self.wb.add_sheet(optp + "_" + str(dp))
+                    self.task.opentype = optp
+                    self.task.allowdupl = dp
+                    i = 0
+                    while i < self.repeat:
+                        j = self.startSize
+                        while j <= self.finSize:
+                            self.task.width = j
+                            self.task.height = j
+                            self.task.finishx = self.task.width - 1
+                            self.task.finishy = self.task.height - 1
+                            self.GenerateEmptyXML()
+                            os.system(self.execFilePath + " " + self.mapFilePath + " fakemap")
+                            self.WriteResults(i, j)
+                            j += 100
+                        i += 1
+                        self.resrow = 0
+                    self.CountAv()
         elif self.mode == 2:
-            self.ChangeMapXML()
-            i = 0
-            while i < self.repeat:
-                os.system(self.execFilePath + " " + self.mapFilePath)
-                self.WriteResults(i, self.width)
-                i += 1
-        self.CountAv()
+            for optp in self.opentypes:
+                for dp in self.duplvars:
+                    if (optp in ["priorityqueue", "vectorofpriorityqueues"]) and (dp == 1):
+                        continue
+
+                    self.res = self.wb.add_sheet(optp + "_" + str(dp))
+                    self.task.opentype = optp
+                    self.task.allowdupl = dp
+                    self.ChangeMapXML()
+
+                    i = 0
+                    while i < self.repeat:
+                        os.system(self.execFilePath + " " + self.mapFilePath)
+                        self.WriteResults(i, self.task.width)
+                        i += 1
+                    self.CountAv()
         self.wb.save("Result_" + str(self.resnum) + ".xls")
         self.Reset()
         self.parentApp.EndExperiment()
@@ -210,11 +239,9 @@ class Test:
 
     def Reset(self):
         self.wb = xlwt.Workbook()
-        self.res = self.wb.add_sheet('result')
         self.resrow = 0
         self.avrow = 0
         self.sumtry = 0
-        self.task = Mission()
         self.resnum = 0
         while os.path.exists("Result_" + str(self.resnum) + ".xls"):
             self.resnum += 1
